@@ -1,0 +1,9 @@
+{
+  "Server": {
+    "port": 3001,
+    "dbport": 27017,
+    "watchDir": "/path/to/motion/rec/dir", // absolute path
+    "username": "user",
+    "password": "pass"
+  }
+}

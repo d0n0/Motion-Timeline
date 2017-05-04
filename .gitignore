@@ -1,0 +1,6 @@
+node_modules/
+/token/*
+/config/development.json
+.DS_Store
+.*.swp
+.tern-port

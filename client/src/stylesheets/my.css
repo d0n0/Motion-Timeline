@@ -1,0 +1,61 @@
+.col-6, .col-sm-4, .col-md-3 {
+    padding-right: 8px;
+    padding-left: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.row {
+    padding-right: 12px;
+    padding-left: 12px;
+}
+
+.card {
+    border: 1px solid rgba(0,0,0,.200);
+}
+
+.form-control {
+    padding-right: 1rem;
+}
+
+.message {
+    text-align: center;
+    font-size: 1.5em;
+}
+
+.bg-atomdark {
+    background-color: #282c34;
+}
+
+.nav-arrow {
+    padding-top: 0.25rem;
+    margin-left: 0.4rem;
+    margin-right: 0.4rem;
+    cursor: pointer;
+}
+
+.app {
+    padding-top: 70px;
+}
+
+.login-card {
+    width: 320px;
+    margin: 6rem auto 100px;
+}
+
+.login-card-title {
+    text-align: center;
+}
+
+.login-button {
+    margin-top: 2rem;
+}
+
+.auto-button {
+    margin-top: 0.1rem;
+    margin-left: 0.3rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 0;
+    padding-bottom: 0;
+}
