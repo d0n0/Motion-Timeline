@@ -12,6 +12,8 @@ const receiveDocs = (props, onData) => {
   const token = Cookies.get('token');
   const date = props.date;
 
+  console.time('fetch list');
+
   fetch('/api/docs', {
     method: 'POST',
     headers: {
@@ -32,6 +34,10 @@ const receiveDocs = (props, onData) => {
     fileNames.reverse();
 
     onData(null, { dirName: date, fileNames: fileNames });
+
+    console.log(`${fileNames.length} imgs`);
+    console.timeEnd('fetch list');
+
     buffer = fileNames;
   })
   .catch(err => {

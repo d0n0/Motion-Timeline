@@ -20,7 +20,7 @@ const ImgCard = ({ dirName, fileName }) => {
   return (
     <Col xl="2" md="3" sm="4" xs="6">
       <Card className="text-center">
-        <LazyLoad offset={1000} height={"100%"} once>
+        <LazyLoad offset={500} height={"100%"} once>
           <ImageZoom
             image={{
               src: path,
