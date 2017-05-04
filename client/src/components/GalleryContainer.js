@@ -12,6 +12,8 @@ const receiveDocs = (props, onData) => {
   const token = Cookies.get('token');
   const date = props.date;
 
+  onData(null, null);
+
   console.time('fetch list');
 
   fetch('/api/docs', {
@@ -33,6 +35,7 @@ const receiveDocs = (props, onData) => {
     fileNames.sort();
     fileNames.reverse();
 
+    console.log('run');
     onData(null, { dirName: date, fileNames: fileNames });
 
     console.log(`${fileNames.length} imgs`);
