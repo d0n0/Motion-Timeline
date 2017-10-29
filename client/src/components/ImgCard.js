@@ -13,7 +13,7 @@ const ImgCard = ({ dirName, fileName }) => {
   const time = base[0].replace(/-/g, ':');
   let frame = '';
   if (base[1] !== undefined) {
-    frame = `F${parseInt(base[1], 10) + 1}`
+    frame = `F${parseInt(base[1], 10)}`
   }
   const caption = `${time} ${frame}`;
 

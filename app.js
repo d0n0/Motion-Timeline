@@ -1,161 +1,179 @@
-const fs = require('fs');
-const express = require('express');
-const app = express();
-const server = require('http').Server(app);
-const io = require('socket.io')(server);
-const config = require('config');
-const path = require('path');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const auth = require('basic-auth');
-const dataStore = require('nedb');
+const fs           = require('fs'),
+      express      = require('express'),
+      app          = express(),
+      server       = require('http').Server(app),
+      io           = require('socket.io')(server),
+      log4js       = require('log4js'),
+      config       = require('config'),
+      path         = require('path'),
+      dataStore    = require('nedb'),
+      bodyParser   = require('body-parser'),
+      cookieParser = require('cookie-parser'),
+      multer       = require('multer'),
+      auth         = require('basic-auth');
 
 
-const PORT = config.get('Server.port') || 3000;
-const WATCHDIR = config.get('Server.watchDir') || `${__dirname}/rec`;
-const USERNAME = config.get('Server.username');
-const PASSWORD = config.get('Server.password');
+const logger = log4js.getLogger();
+
+// Global setting.
+const PORT     = config.get('Server.port') || 3001,
+      SAVEDIR = config.get('Server.saveDir') || path.join(__dirname, 'archive'),
+      USERNAME = config.get('Server.username'),
+      PASSWORD = config.get('Server.password');
 
 
-const tokenDB = new dataStore({ filename: `${__dirname}/token/token.db`, autoload: true });
-// Set token expiration time to 3 days
-tokenDB.ensureIndex({ fieldName: 'createdAt', expireAfterSeconds: 259200 });
-
-const formatData = pathStr => {
-  const pathArr = pathStr.split(path.sep),
-        dirName = pathArr[pathArr.length - 2],
-        fileName = pathArr[pathArr.length - 1],
-        Data = { dirName, fileName};
-  return Data;
+if (!fs.existsSync(SAVEDIR)) {
+  console.error(`saveDir '${SAVEDIR}' : No such directory.`);
+  process.exit(1);
 }
 
+// Store login token on nedb. Set token expiration time to 3 days.
+const tokenDB = new dataStore({filename: path.join(__dirname, 'token.db'), autoload: true});
+tokenDB.ensureIndex({fieldName: 'createdAt', expireAfterSeconds: 259200});
 
-try {
 
-  app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(bodyParser.json());
-  app.use(cookieParser());
-  app.use(express.static(`${__dirname}/client/build`));
+// Express Middleware
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'client', 'build')));
 
-  app.post('/api/login', (req, res) => {
-    if ((USERNAME === req.body.username) && (PASSWORD === req.body.password)) {
-      tokenDB.insert({ createdAt: new Date() }, (err, newToken) => {
-        if (err) {
-          throw err;
-        } else {
-          res.send({ status: 'ok', token: newToken });
-          res.end();
-        }
-      });
-    } else {
-      res.send({ status: 'ng' });
-      res.end();
-    }
-  });
 
-  // Receive client's initial request to get all img info
-  app.post('/api/docs', (req, res) => {
-    const date = req.body.date;
-    const token = req.body.token;
-    tokenDB.findOne({ _id: token }, (err, result) => {
+// Handle login requests.
+app.post('/api/login', (req, res) => {
+  if ((USERNAME === req.body.username) && (PASSWORD === req.body.password)) {
+    tokenDB.insert({createdAt: new Date()}, (err, newToken) => {
       if (err) {
-        throw err;
-      } else if (result === null) {
-        res.status(400).send('Invalid token');
+        logger.error(err);
       } else {
-        fs.readdir(`${WATCHDIR}/${date}`, (err, fileNames) => {
-          if (err) {
-            // if the directory does not exist
-            res.send([]);
-          } else {
-            const imgFileNames = fileNames.filter(ele => {
-              if (path.extname(ele) === ('.jpg' || '.jpeg')) {
-                return true;
-              }
-            });
-            res.send(imgFileNames);
-          }
-        });
+        res.send({status: 'ok', token: newToken});
+        res.end();
       }
     });
+  } else {
+    res.send({status: 'ng'});
+    res.end();
+  }
 });
 
-// Receive requrests from client's <img src="id"> tag
+// Handle requests for file names with specific dates.
+app.post('/api/docs', (req, res) => {
+  const date = req.body.date;
+  const token = req.body.token;
+  tokenDB.findOne({_id: token}, (err, result) => {
+    if (err) {
+      logger.error(err);
+    } else if (result === null) {
+      res.status(400).send('Invalid token');
+    } else {
+      fs.readdir(path.join(SAVEDIR, date), (err, fileNames) => {
+        if (err) {
+          res.send([]); // if the directory does not exist.
+        } else {
+          const imgFileNames = fileNames.filter(ele => path.extname(ele) === ('.jpg' || '.jpeg'));
+          res.send(imgFileNames);
+        }
+      });
+    }
+  });
+});
+
+// Handle image binary data request.
 app.get('/api/img/:dirName/:fileName', (req, res) => {
-    const token = req.cookies.token;
-    tokenDB.findOne({ _id: token }, (err, result) => {
+  const token = req.cookies.token;
+  tokenDB.findOne({_id: token}, (err, result) => {
+    if (err) {
+      logger.error(err);
+    } else if (result === null) {
+      res.cookie('token', '', {expires: new Date(Date.now() - 10000)});
+      res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+    } else {
+      const filePath = path.join(SAVEDIR, req.params.dirName, req.params.fileName);
+      const options = {
+        root: '/',
+        dotfiles: 'deny',
+        headers: {
+          'Content-Type': 'image/jpeg'
+        }
+      };
+      res.sendFile(filePath, options, err => {
+        if (err) {
+          // when file can not be found
+          const dummyImgPath = path.join(__dirname, 'dummy', 'dummy.jpg');
+          res.sendFile(dummyImgPath, options, err => {
+            if (err) {
+              logger.error(err);
+            }
+          });
+        }
+      });
+    }
+  });
+});
+
+// Handle authentication when images are uploaded from motion.py.
+const uploadAuth = (req, res, next) => {
+  const user = auth(req);
+  if (!user || user.name !== USERNAME || user.pass !== PASSWORD) {
+    res.status(401).send('Authorization Failed');
+  } else {
+    res.status(200).send('Authorization Success');
+    next()
+  }
+}
+
+// Handle saving of uploaded images from motion.py.
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir_path = path.join(SAVEDIR, req.params.dirName);
+    if (!fs.existsSync(dir_path)) {
+      fs.mkdirSync(dir_path);
+    }
+    cb(null, dir_path);
+  },
+  filename: (req, file, cb) => {
+    cb(null, req.params.fileName);
+  },
+});
+const upload = multer({storage: storage});
+
+// Handle image upload requests.
+app.post('/api/upload/:dirName/:fileName', uploadAuth, upload.single('image'), (req, res) => {
+
+  const date = req.params.dirName;
+  io.to(date).emit('add', req.params.fileName);
+});
+
+// Handle other request.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+});
+
+// Handle socket.io room entry /exit request.
+io.on('connection', socket => {
+  socket.on('join', msg => {
+    tokenDB.findOne({_id: msg.token}, (err, result) => {
       if (err) {
-        throw err;
-      } else if (result === null) {
-        res.cookie('token', '', { expires: new Date(Date.now() - 10000) });
-        res.sendFile(`${__dirname}/client/build/index.html`);
+        logger.error(err);
       } else {
-        const filePath = `${WATCHDIR}/${req.params.dirName}/${req.params.fileName}`;
-        const options = {
-          root: '/',
-          dotfiles: 'deny',
-          headers: {
-            'Content-Type': 'image/jpeg'
+        if (result !== null) {
+          // leave other room
+          for (room in socket.rooms) {
+            if (socket.id !== room) {
+              socket.leave(room);
+            }
           }
-        };
-        res.sendFile(filePath, options, err => {
-          if (err) {
-            // when file can not be found
-            const dummyImgPath = `${__dirname}/dummy/dummy.jpg`;
-            res.sendFile(dummyImgPath, options, err => {
-              if (err) {
-                throw err;
-              }
-            });
-          }
-        });
+          socket.join(msg.date);
+        }
       }
     });
   });
+});
 
-  // Receive file addition notification from Motion
-  app.get('/api/notify/*/:dirName/:fileName', (req, res) => {
-    const user = auth(req);
-
-    if (!user || user.name !== USERNAME || user.pass !== PASSWORD) {
-      res.status(401).send('Authentication Failed');
-    } else {
-      res.status(200).send('Authentication Success');
-      const date = req.params.dirName;
-      io.to(date).emit('add', req.params.fileName);
-    }
-  });
-
-  app.get('*', (req, res) => {
-    res.sendFile(`${__dirname}/client/build/index.html`);
-  });
-
-  io.on('connection', socket => {
-    socket.on('join', msg => {
-      tokenDB.findOne({ _id: msg.token }, (err, result) => {
-        if (err) {
-          throw err;
-        } else {
-          if (result !== null) {
-            // leave other room
-            for (room in socket.rooms) {
-              if (socket.id !== room) socket.leave(room);
-            }
-            socket.join(msg.date);
-          }
-        }
-      });
-    });
-  });
-
-  server.listen(PORT, (err) => {
-    if (err) {
-      throw err;
-    } else {
-      console.log(`Start listening on *:${PORT}`);
-    }
-  });
-
-} catch (err) {
-  console.log(err);
-}
+server.listen(PORT, err => {
+  if (err) {
+    logger.error(err);
+  } else {
+    console.log(`Start listening on *:${PORT}`);
+  }
+});

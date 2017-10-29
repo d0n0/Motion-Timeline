@@ -1,7 +1,8 @@
 node_modules/
-/token/*
 /config/development.json
 .DS_Store
 .*.swp
 .tern-port
 npm-debug.log
+token.db
+archive

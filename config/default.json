@@ -1,8 +1,7 @@
 {
   "Server": {
     "port": 3001,
-    "dbport": 27017,
-    "watchDir": "/path/to/motion/rec/dir", // absolute path
+    "saveDir": "/Users/neet/github/Motion-Timeline/archive",
     "username": "user",
     "password": "pass"
   }

@@ -1,0 +1,23 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+auth	../motion.py	/^auth = ('user', 'pass')       # Login username and password; (user, pass).$/;"	kind:variable	line:17
+cam	../motion.py	/^    cam = cv2.VideoCapture(device)$/;"	kind:variable	line:63
+cv2	../motion.py	/^import cv2$/;"	kind:namespace	line:4
+datetime	../motion.py	/^import datetime$/;"	kind:namespace	line:7
+device	../motion.py	/^device = 1             # Device number of webcam.$/;"	kind:variable	line:12
+event	../motion.py	/^def event():$/;"	kind:function	line:21
+fps	../motion.py	/^fps = 3                # FPS when capturing images within event.$/;"	kind:variable	line:15
+frame_diff	../motion.py	/^def frame_diff(images):$/;"	kind:function	line:41
+images	../motion.py	/^    images = [cam.read()[1] for _ in range(3)]$/;"	kind:variable	line:64
+motion.py	../motion.py	1;"	kind:file	line:1
+np	../motion.py	/^import numpy as np$/;"	kind:namespace	line:5
+os	../motion.py	/^import os$/;"	kind:namespace	line:8
+requests	../motion.py	/^import requests$/;"	kind:namespace	line:9
+size	../motion.py	/^size = (640, 480)      # Image size to be saved; (width, height).$/;"	kind:variable	line:14
+threshold	../motion.py	/^threshold = 30         # Threshold of mask iamge.$/;"	kind:variable	line:13
+time	../motion.py	/^import time$/;"	kind:namespace	line:6
+url	../motion.py	/^url = 'http:\/\/localhost:3001' # Motion-Timeline URL.$/;"	kind:variable	line:16
