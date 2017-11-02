@@ -1,7 +1,7 @@
 {
   "Server": {
     "port": 3001,
-    "saveDir": "/path/to/images/save/dir", // Absolute path
+    "saveDir": "./archive",
     "username": "user",
     "password": "pass"
   }
