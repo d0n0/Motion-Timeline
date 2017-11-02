@@ -19,18 +19,14 @@ const logger = log4js.getLogger();
 
 // Global config.
 const PORT     = config.get('Server.port') || 3001,
-      SAVEDIR  = config.get('Server.saveDir'),
+      SAVEDIR  = path.resolve(config.get('Server.saveDir')),
       USERNAME = config.get('Server.username'),
       PASSWORD = config.get('Server.password');
 
 
 // Check config.
-if (!path.isAbsolute(SAVEDIR)) {
-  console.error(`saveDir '${SAVEDIR}' : Not absolute path.`);
-  process.exit(1);
-}
 if (!fs.existsSync(SAVEDIR)) {
-  console.error(`saveDir '${SAVEDIR}' : No such directory.`);
+  console.error(`config error: saveDir '${SAVEDIR}' No such directory.`);
   process.exit(1);
 }
 

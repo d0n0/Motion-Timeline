@@ -54,5 +54,8 @@ $ pm2 start motion-server.js
 $ pm2 start motion-detector.py
 ```
 
+## Note
+- You can devide motion-detector and motion-server into different hosts.
+
 ## License
 [MIT](https://github.com/dono/Motion-Timeline/blob/master/LICENSE)
