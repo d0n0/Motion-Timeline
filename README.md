@@ -19,7 +19,7 @@ motion-server saves images received from motion-detector and provides a Web UI f
 
 ## Requirement
 - Webcam
-- node.js ≧6.x
+- node.js ≧4.x
 - python  2|3
 - OpenCV  2|3
 
@@ -52,20 +52,6 @@ Edit variable declaration in `motion-detector.py`
 $ npm install -g pm2
 $ pm2 start motion-server.js
 $ pm2 start motion-detector.py
-```
-
-### Run scripts with systemd
-#### Edit and copy .service files
-```
-$ sudo cp ./motion-server.service /etc/systemd/system/
-$ sudo cp ./motion-detector.service /etc/systemd/system/
-$ sudo systemctl daemon-reload
-```
-
-#### Start daemon
-```
-$ sudo systemctl start motion-server
-$ sudo systemctl start motion-detector
 ```
 
 ## License
