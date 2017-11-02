@@ -25,7 +25,7 @@ const PORT     = config.get('Server.port') || 3001,
 
 
 // Check config.
-if (!path.isAbsolute()) {
+if (!path.isAbsolute(SAVEDIR)) {
   console.error(`saveDir '${SAVEDIR}' : Not absolute path.`);
   process.exit(1);
 }
