@@ -35,7 +35,6 @@ const receiveDocs = (props, onData) => {
     fileNames.sort();
     fileNames.reverse();
 
-    console.log('run');
     onData(null, { dirName: date, fileNames: fileNames });
 
     console.log(`${fileNames.length} imgs`);

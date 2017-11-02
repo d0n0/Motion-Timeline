@@ -1,12 +1,12 @@
 {
   "name": "motion-timeline",
   "version": "0.0.1",
-  "description": "Displays images recorded by Motion in real time",
-  "main": "app.js",
+  "description": "Motion-Timeline is a Web UI for motion detector.",
+  "main": "server.js",
   "author": "dono",
   "repository": {
     "type": "git",
-    "url": "https://github.com/d0n0/Motion-Timeline.git"
+    "url": "https://github.com/dono/Motion-Timeline.git"
   },
   "license": "MIT",
   "dependencies": {

@@ -4,20 +4,25 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-auth	../motion.py	/^auth = ('user', 'pass')       # Login username and password; (user, pass).$/;"	kind:variable	line:17
-cam	../motion.py	/^    cam = cv2.VideoCapture(device)$/;"	kind:variable	line:63
-cv2	../motion.py	/^import cv2$/;"	kind:namespace	line:4
-datetime	../motion.py	/^import datetime$/;"	kind:namespace	line:7
-device	../motion.py	/^device = 1             # Device number of webcam.$/;"	kind:variable	line:12
-event	../motion.py	/^def event():$/;"	kind:function	line:21
-fps	../motion.py	/^fps = 3                # FPS when capturing images within event.$/;"	kind:variable	line:15
-frame_diff	../motion.py	/^def frame_diff(images):$/;"	kind:function	line:41
-images	../motion.py	/^    images = [cam.read()[1] for _ in range(3)]$/;"	kind:variable	line:64
-motion.py	../motion.py	1;"	kind:file	line:1
-np	../motion.py	/^import numpy as np$/;"	kind:namespace	line:5
-os	../motion.py	/^import os$/;"	kind:namespace	line:8
-requests	../motion.py	/^import requests$/;"	kind:namespace	line:9
-size	../motion.py	/^size = (640, 480)      # Image size to be saved; (width, height).$/;"	kind:variable	line:14
-threshold	../motion.py	/^threshold = 30         # Threshold of mask iamge.$/;"	kind:variable	line:13
-time	../motion.py	/^import time$/;"	kind:namespace	line:6
-url	../motion.py	/^url = 'http:\/\/localhost:3001' # Motion-Timeline URL.$/;"	kind:variable	line:16
+auth	../motion-detector.py	/^auth = ('user', 'pass')       # Login username and password; (user, pass).$/;"	kind:variable	line:20
+cam	../motion-detector.py	/^    cam = cv2.VideoCapture(device)$/;"	kind:variable	line:81
+cv2	../motion-detector.py	/^import cv2$/;"	kind:namespace	line:4
+datefmt	../motion-detector.py	/^                        datefmt='%Y\/%m\/%d %H:%M:%S')$/;"	kind:variable	line:78
+datetime	../motion-detector.py	/^import datetime$/;"	kind:namespace	line:7
+device	../motion-detector.py	/^device = 0                    # Device number of webcam. Numbers are assigned from 0.$/;"	kind:variable	line:15
+event	../motion-detector.py	/^def event():$/;"	kind:function	line:24
+fps	../motion-detector.py	/^fps = 3                       # FPS when capturing images within event.$/;"	kind:variable	line:18
+frame_diff	../motion-detector.py	/^def frame_diff(images):$/;"	kind:function	line:54
+images	../motion-detector.py	/^    images = [cam.read()[1] for _ in range(3)]$/;"	kind:variable	line:89
+logging	../motion-detector.py	/^import logging$/;"	kind:namespace	line:10
+motion-detector.py	../motion-detector.py	1;"	kind:file	line:1
+np	../motion-detector.py	/^import numpy as np$/;"	kind:namespace	line:5
+os	../motion-detector.py	/^import os$/;"	kind:namespace	line:8
+post_image	../motion-detector.py	/^        def post_image():$/;"	kind:function	line:39
+requests	../motion-detector.py	/^import requests$/;"	kind:namespace	line:12
+size	../motion-detector.py	/^size = (640, 480)             # Image size to be saved; (width, height).$/;"	kind:variable	line:17
+sys	../motion-detector.py	/^import sys$/;"	kind:namespace	line:9
+threading	../motion-detector.py	/^import threading$/;"	kind:namespace	line:11
+threshold	../motion-detector.py	/^threshold = 30                # Threshold of mask image. The higher the value, the lower the sensitivity becomes.$/;"	kind:variable	line:16
+time	../motion-detector.py	/^import time$/;"	kind:namespace	line:6
+url	../motion-detector.py	/^url = 'http:\/\/localhost:3001' # motion-server.js URL.$/;"	kind:variable	line:19

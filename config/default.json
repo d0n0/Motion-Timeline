@@ -1,7 +1,7 @@
 {
   "Server": {
     "port": 3001,
-    "saveDir": "/Users/neet/github/Motion-Timeline/archive",
+    "saveDir": "/path/to/images/save/dir", // Absolute path
     "username": "user",
     "password": "pass"
   }

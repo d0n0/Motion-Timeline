@@ -12,11 +12,11 @@ import threading
 import requests
 
 
-device = 1                    # Device number of webcam.
-threshold = 30                # Threshold of mask iamge.
+device = 0                    # Device number of webcam. Numbers are assigned from 0.
+threshold = 30                # Threshold of mask image. The higher the value, the lower the sensitivity becomes.
 size = (640, 480)             # Image size to be saved; (width, height).
 fps = 3                       # FPS when capturing images within event.
-url = 'http://localhost:3001' # Motion-Timeline URL.
+url = 'http://localhost:3001' # motion-server.js URL.
 auth = ('user', 'pass')       # Login username and password; (user, pass).
 
 
@@ -76,8 +76,16 @@ if __name__ == '__main__':
 
     logging.basicConfig(format='%(asctime)s %(levelname)s: %(message)s',
                         datefmt='%Y/%m/%d %H:%M:%S')
+    logging.getLogger().setLevel(logging.INFO)
 
     cam = cv2.VideoCapture(device)
+
+    if not cam.isOpened():
+        logging.error('Camera device[{}] not found.'.format(device))
+        sys.exit(1)
+    
+    logging.info('Start motion detection...')
+
     images = [cam.read()[1] for _ in range(3)]
 
     while cam.isOpened():

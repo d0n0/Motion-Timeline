@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const fs           = require('fs'),
       express      = require('express'),
       app          = express(),
@@ -15,13 +17,18 @@ const fs           = require('fs'),
 
 const logger = log4js.getLogger();
 
-// Global setting.
+// Global config.
 const PORT     = config.get('Server.port') || 3001,
-      SAVEDIR = config.get('Server.saveDir') || path.join(__dirname, 'archive'),
+      SAVEDIR  = config.get('Server.saveDir'),
       USERNAME = config.get('Server.username'),
       PASSWORD = config.get('Server.password');
 
 
+// Check config.
+if (!path.isAbsolute()) {
+  console.error(`saveDir '${SAVEDIR}' : Not absolute path.`);
+  process.exit(1);
+}
 if (!fs.existsSync(SAVEDIR)) {
   console.error(`saveDir '${SAVEDIR}' : No such directory.`);
   process.exit(1);
