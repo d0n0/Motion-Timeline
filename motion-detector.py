@@ -12,9 +12,9 @@ import threading
 import requests
 
 
-device = 1                    # Device number of webcam. Numbers are assigned from 0.
+device = 0                    # Device number of webcam. Numbers are assigned from 0.
 threshold = 30                # Threshold of mask image. The higher the value, the lower the sensitivity becomes.
-size = (320, 240)             # Image size to be saved; (width, height).
+size = (640, 480)             # Image size to be saved; (width, height).
 fps = 3                       # FPS when capturing images within event.
 url = 'http://localhost:3001' # motion-server.js URL.
 auth = ('user', 'pass')       # Login username and password; (user, pass).
