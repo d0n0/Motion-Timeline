@@ -12,9 +12,9 @@ import threading
 import requests
 
 
-device = 0                    # Device number of webcam. Numbers are assigned from 0.
+device = 1                    # Device number of webcam. Numbers are assigned from 0.
 threshold = 30                # Threshold of mask image. The higher the value, the lower the sensitivity becomes.
-size = (640, 480)             # Image size to be saved; (width, height).
+size = (320, 240)             # Image size to be saved; (width, height).
 fps = 3                       # FPS when capturing images within event.
 url = 'http://localhost:3001' # motion-server.js URL.
 auth = ('user', 'pass')       # Login username and password; (user, pass).
@@ -31,18 +31,18 @@ def event():
 
         file_name = '{}_{}.jpg'.format(tm, str(i+1)) # hh-mm-ss_frame.png
 
-        _, image_enc = cv2.imencode('.jpg', image)
+        _, image_enc = cv2.imencode('.jpg', cv2.resize(image, size))
 
         post_url = os.path.join(url, 'api', 'upload', dt, file_name)
         files = {'image': ('filename', image_enc.tostring(), 'image/jpeg')}
 
         def post_image():
             try:
-                requests.post(post_url, files=files, auth=('user', 'pass'))
+                requests.post(post_url, files=files, auth=auth)
             except:
                 # logging.error(sys.exc_info())
                 logging.error('Request error')
-        
+
         t = threading.Thread(target=post_image)
         t.setDaemon(True)
         t.start()
